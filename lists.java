@@ -2,7 +2,7 @@ package com.zakhar;
 
 import java.util.Scanner;
 
-public class Main {
+public class Main{
     static class Wagon {
         String name;
         Wagon next = this;
@@ -13,17 +13,7 @@ public class Main {
         }
 
         void print() {
-            System.out.print(name+" ");
-        }
-    }
-
-    static class ListaWagonow {
-        Wagon first;
-
-        ListaWagonow(Wagon f) {
-            first = f;
-            first.next = first;
-            first.prev = first;
+            System.out.print(name);
         }
     }
 
@@ -45,10 +35,12 @@ public class Main {
             while (p != l) {
                 if (p.next != prev) {
                     p.print();
+                    System.out.print(" ");
                     prev = p;
                     p = p.next;
                 } else {
                     p.print();
+                    System.out.print(" ");
                     prev = p;
                     p = p.prev;
                 }
@@ -56,47 +48,21 @@ public class Main {
             p.print();
             System.out.println();
         }
-
-        int liczbaWagonow() {
-            int licznik = 0;
-            Wagon p = first;
-            Wagon l = first.prev;
-            Wagon prev = first.prev;
-            while (p != l) {
-                if (p.next != prev) {
-                    licznik++;
-                    prev = p;
-                    p = p.next;
-                } else {
-                    licznik++;
-                    prev = p;
-                    p = p.prev;
-                }
-            }
-            licznik++;
-            return licznik;
-        }
     }
 
     static class ListaPociagow {
         Pociag first = null;
 
-        ListaPociagow() {};
-
-        ListaPociagow(Pociag f) {
-            first = f;
-        }
+        ListaPociagow() {}
 
         void Usun(Pociag u) {
             if (first.name.equals(u.name)) {
                 first = first.next;
             } else {
                 Pociag f = first;
-                if (!f.name.equals(u.name)) {
                     while (!f.next.name.equals(u.name)) {
                         f = f.next;
                     }
-                }
                 f.next = f.next.next;
             }
         }
@@ -106,11 +72,7 @@ public class Main {
             while ( ten != null && !ten.name.equals(nazwaPociagu)) {
                 ten = ten.next;
             }
-            if (ten == null) {
-                return false;
-            } else {
-                return true;
-            }
+            return ten != null;
         }
 
         Pociag FindPociag(String nazwaPociagu) {
@@ -134,14 +96,12 @@ public class Main {
             Pociag f = FindPociag(nazwaPociagu);
             if ( f == null) {
                 Wagon w = new Wagon(nazwaWagonu);
-                ListaWagonow l = new ListaWagonow(w);
                 Pociag p = new Pociag(nazwaPociagu, w);
                 if (first == null) {
                     first = p;
                     first.next = null;
                 } else {
-                    Pociag n = first;
-                    p.next = n;
+                    p.next = first;
                     first = p;
                 }
             } else {
@@ -152,7 +112,7 @@ public class Main {
         void InsertFirst(String nazwaPociagu, String nazwaWagonu) {
             Pociag ten = FindPociag(nazwaPociagu);
             if (ten == null) {
-                System.out.println("train "+nazwaPociagu+" does not exist");
+                System.out.println("Train "+nazwaPociagu+" does not exist");
             } else {
                 Wagon wagon = new Wagon(nazwaWagonu);
                 if (ten.first.next == ten.first.next.next) {
@@ -175,7 +135,7 @@ public class Main {
         void InsertLast(String nazwaPociagu, String nazwaWagonu) {
             Pociag ten = FindPociag(nazwaPociagu);
             if (ten == null) {
-                System.out.println("train "+nazwaPociagu+" does not exist");
+                System.out.println("Train "+nazwaPociagu+" does not exist");
             } else {
                 Wagon wagon = new Wagon(nazwaWagonu);
                 if (ten.first.next == ten.first.next.next && ten.first.prev != ten.first) {
@@ -183,14 +143,13 @@ public class Main {
                     wagon.prev = ten.first.prev;
                     ten.first.prev.next = ten.first.prev.prev;
                     ten.first.prev.prev = wagon;
-                    ten.first.prev = wagon;
                 } else {
                     Wagon f = ten.first.prev;
                     wagon.next = ten.first;
                     wagon.prev = f;
                     f.next = wagon;
-                    ten.first.prev = wagon;
                 }
+                ten.first.prev = wagon;
             }
         }
 
@@ -202,16 +161,12 @@ public class Main {
                     p.first = null;
                     Usun(p);
                 } else {
-                    if (p.first == p.first.next.next) {
+                    if (p.first.next.next == p.first) {
                         p.first.next.next = p.first.next.prev;
-                        p.first.next.prev = p.first.prev;
-                        p.first.prev.next = p.first.next;
-                        p.first = p.first.next;
-                    } else {
-                        p.first.next.prev = p.first.prev;
-                        p.first.prev.next = p.first.next;
-                        p.first = p.first.next;
                     }
+                    p.first.next.prev = p.first.prev;
+                    p.first.prev.next = p.first.next;
+                    p.first = p.first.next;
                 }
                 nowyPociag(T2, tmp);
             } else if (!DoesExist(T1)) {
@@ -229,14 +184,11 @@ public class Main {
                     p.first = null;
                     Usun(p);
                 } else {
-                    if (p.first == p.first.next.next && p.liczbaWagonow() > 2) {
-                        p.first.prev = p.first.prev.prev;
-                        p.first.prev.prev = p.first.prev.next;
-                        p.first.prev.next = p.first;
-                    } else {
-                        p.first.prev = p.first.prev.prev;
-                        p.first.prev.next = p.first;
+                    if (p.first.prev.prev.prev == p.first.prev) {
+                        p.first.prev.prev.prev = p.first.prev.prev.next;
                     }
+                    p.first.prev = p.first.prev.prev;
+                    p.first.prev.next = p.first;
                 }
                 nowyPociag(T2, tmp);
             } else if (!DoesExist(T1)) {
@@ -260,45 +212,12 @@ public class Main {
             if (DoesExist(T1) && DoesExist(T2)) {
                 Pociag pierwszy = FindPociag(T1);
                 Pociag drugi = FindPociag(T2);
-                if (pierwszy.first.next.next == pierwszy.first) {
-                    if (drugi.first.next.next == drugi.first) {
-                        // pirewszy reversed drugi tez
-                        pierwszy.first.prev.next  = drugi.first;
-                        Wagon tmp  = pierwszy.first.prev;
-                        pierwszy.first.prev = drugi.first.prev;
-                        drugi.first.prev = tmp;
-                        pierwszy.first.prev = pierwszy.first;
-                        Usun(drugi);
-                    } else {
-                        // pierwszy reversed drugi nie
-                        pierwszy.first.prev.next = pierwszy.first.prev.prev;
-                        pierwszy.first.prev.prev = drugi.first;
-                        Wagon tmp = drugi.first.prev;
-                        drugi.first.prev = pierwszy.first.prev;
-                        pierwszy.first.prev = tmp;
-                        pierwszy.first.prev.next = pierwszy.first;
-                        Usun(drugi);
-                    }
-                } else {
-                    if (drugi.first.next.next == drugi.first) {
-                        //pierwszy norm drugi reversed
-                        pierwszy.first.prev.next = drugi.first;
-                        drugi.first.prev.next = pierwszy.first;
-                        Wagon tmp = pierwszy.first.prev;
-                        pierwszy.first.prev = drugi.first.prev;
-                        drugi.first.prev = tmp;
-                        Usun(drugi);
-                    } else {
-                        // oba norm
-                        Wagon a = drugi.first;
-                        pierwszy.first.prev.next = a;
-                        a.prev.next = pierwszy.first;
-                        Wagon b = pierwszy.first.prev;
-                        pierwszy.first.prev = a.prev;
-                        a.prev = b;
-                        Usun(drugi);
-                    }
-                }
+                pierwszy.first.prev.next = drugi.first;
+                drugi.first.prev.next = pierwszy.first;
+                Wagon tmp = drugi.first.prev;
+                drugi.first.prev = pierwszy.first.prev;
+                pierwszy.first.prev = tmp;
+                Usun(drugi);
             }
         }
 
@@ -312,7 +231,6 @@ public class Main {
             System.out.println(p.name+" ");
         }
     }
-
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -372,23 +290,5 @@ public class Main {
                 }
             }
         }
-        ListaPociagow L = new ListaPociagow();
-        L.nowyPociag("T1","W0");
-        L.InsertLast("T1","W1");
-        L.InsertLast("T1","W2");
-        Pociag p = L.FindPociag("T1");
-        System.out.println(p.first.name);
-        System.out.println(p.first.next.name);
-        System.out.println(p.first.prev.name);
-        System.out.println(p.first.next.prev.name);
-        System.out.println(p.first.next.next.name);
-        System.out.println();
-        L.Reverse("T1");
-        p = L.FindPociag("T1");
-        System.out.println(p.first.name);
-        System.out.println(p.first.next.name);
-        System.out.println(p.first.prev.name);
-        System.out.println(p.first.next.prev.name);
-        System.out.println(p.first.next.next.name);
     }
 }
